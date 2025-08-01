@@ -45,6 +45,7 @@ jobs:
           echo "tag=pr-${{ github.event.number }}" >> $GITHUB_OUTPUT
         else
           echo "tag=build-${{ github.run_number }}" >> $GITHUB_OUTPUT
+        fi
 
     - name: Build Docker image
       run: docker build -t ${{ secrets.DOCKER_REPO }}:${{ steps.vars.outputs.tag }} .
