@@ -1,10 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.9-eclipse-temurin-21'
-            args '-v /var/lib/jenkins/.m2:/root/.m2'
-        }
-    }
+    // agent {
+    //     docker {
+    //         image 'maven:3.9.9-eclipse-temurin-21'
+    //         args '-v /var/lib/jenkins/.m2:/root/.m2'
+    //     }
+    // }
 
     environment {
         AWS_REGION       = 'us-east-1'
