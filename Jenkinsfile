@@ -1,7 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.8.1-adoptopenjdk-11'
+            image 'maven:3.9.0-eclipse-temurin-21'
+            args '-v /root/.m2:/root/.m2'
         }
     }
 
