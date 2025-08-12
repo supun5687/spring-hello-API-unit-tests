@@ -38,7 +38,7 @@ pipeline {
             steps {
                 sh 'ls -ltr'
                  // build the project and create a JAR file
-                 sh 'cd spring-hello-API-unit-tests && mvn clean package'
+                 sh 'mvn clean package'
             }
             post {
                 always {
