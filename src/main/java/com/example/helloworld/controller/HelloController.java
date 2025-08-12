@@ -13,7 +13,7 @@ public class HelloController {
     @GetMapping("/hello")
     public String sayHello() {
         logger.info("Request received for /hello");
-        return "Hello, World from Java 21!";
+        return "Hello, World from Java 11!";
     }
 }
 
