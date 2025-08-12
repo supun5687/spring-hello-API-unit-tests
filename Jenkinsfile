@@ -10,7 +10,7 @@ pipeline {
         AWS_REGION       = 'us-east-1'
         AWS_ACCOUNT_ID   = '123456789012'
         SONAR_HOST_URL   = 'https://sonarqube.example.com'
-        IMAGE_NAME       = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/myapp"
+        IMAGE_NAME       = "supun1995/spring-11:${env.BUILD_NUMBER}"
     }
 
     options {
@@ -43,6 +43,25 @@ pipeline {
             post {
                 always {
                     junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+
+
+         stage('Build and Push Docker Image') {
+            environment {
+                REGISTRY_CREDENTIALS = credentials('docker-cred')
+            }
+            steps {
+                script {
+                    sh 'docker build -t ${IMAGE_NAME} .'
+
+                    def dockerImage = docker.image("${IMAGE_NAME}")
+
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+                        dockerImage.push()
+                    }
                 }
             }
         }
