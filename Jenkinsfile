@@ -1,10 +1,10 @@
 pipeline {
-    // agent {
-    //     docker {
-    //         image 'maven:3.9.9-eclipse-temurin-21'
-    //         args '-v /var/lib/jenkins/.m2:/root/.m2'
-    //     }
-    // }
+    agent {
+        docker {
+          image 'abhishekf5/maven-abhishek-docker-agent:v1'
+          args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+        }
+    }
 
     environment {
         AWS_REGION       = 'us-east-1'
@@ -36,7 +36,9 @@ pipeline {
 
         stage('Build & Unit Tests') {
             steps {
-                sh 'mvn clean verify -B'
+                sh 'ls -ltr'
+                 // build the project and create a JAR file
+                 sh 'cd spring-hello-API-unit-tests && mvn clean package'
             }
             post {
                 always {
