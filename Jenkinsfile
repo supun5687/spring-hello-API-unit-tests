@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Detect branch automatically from Multibranch Pipeline
-                    branchName = env.BRANCH_NAME
+                    branchName = "main"
                     echo "Triggered branch: ${branchName}"
 
                     // Load branch-specific config
