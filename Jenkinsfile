@@ -52,7 +52,7 @@ pipeline {
 
                     // Copy correct config into Docker build context
                     sh """
-                        cp ${CONFIG_FILE} application.yaml
+                        cp src/main/resources/${CONFIG_FILE} application.properties
                     """
                 }
             }
