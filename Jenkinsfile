@@ -1,16 +1,15 @@
+@Library('jenkins-shared-library') _
+
 pipeline {
     agent {
         docker {
-          image 'abhishekf5/maven-abhishek-docker-agent:v1'
-          args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+            image 'abhishekf5/maven-abhishek-docker-agent:v1'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
     environment {
-        AWS_REGION       = 'us-east-1'
-        AWS_ACCOUNT_ID   = '123456789012'
-        SONAR_HOST_URL   = 'https://sonarqube.example.com'
-        IMAGE_NAME       = "supun1995/spring-11:${env.BUILD_NUMBER}"
+        IMAGE_NAME = "supun1995/spring-11:${env.BUILD_NUMBER}"
     }
 
     options {
@@ -20,48 +19,31 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout Code') {
+        stage('Prepare') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'refs/heads/main']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/supun5687/spring-hello-API-unit-tests.git',
-                        credentialsId: 'git-https-creds'
-                    ]]
-                ])
-            }
-        }
+                script {
+                    // Detect branch automatically from Multibranch Pipeline
+                    branchName = env.BRANCH_NAME
+                    echo "Triggered branch: ${branchName}"
 
-        stage('Build & Unit Tests') {
-            steps {
-                sh 'ls -ltr'
-                 // build the project and create a JAR file
-                 sh 'mvn clean package'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
+                    // Load branch-specific config
+                    config = config.getConfig(branchName)
                 }
             }
         }
 
-
-
-         stage('Build and Push Docker Image') {
-            environment {
-                REGISTRY_CREDENTIALS = credentials('docker-cred')
-            }
+        stage('Build App') {
             steps {
                 script {
-                    sh 'docker build -t ${IMAGE_NAME} .'
+                    buildApp(config)
+                }
+            }
+        }
 
-                    def dockerImage = docker.image("${IMAGE_NAME}")
-
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
-                        dockerImage.push()
-                    }
+        stage('Docker Build & Push') {
+            steps {
+                script {
+                    dockerBuildPush(config, IMAGE_NAME)
                 }
             }
         }
