@@ -32,6 +32,32 @@ pipeline {
             }
         }
 
+        stage('Select Config File') {
+            steps {
+                script {
+                    // Detect branch name from Jenkins env vars
+                    def branch = "main"
+
+                    if (branch == "dev") {
+                        CONFIG_FILE = "application-dev.properties"
+                    } else if (branch == "qa") {
+                        CONFIG_FILE = "application-qa.properties"
+                    } else if (branch == "main") {
+                        CONFIG_FILE = "application-prod.properties"
+                    } else {
+                        error("Unknown branch: ${branch}")
+                    }
+
+                    echo "Using config file: ${CONFIG_FILE}"
+
+                    // Copy correct config into Docker build context
+                    sh """
+                        cp ${CONFIG_FILE} application.yaml
+                    """
+                }
+            }
+        }
+
         stage('Build App') {
             steps {
                 script {
