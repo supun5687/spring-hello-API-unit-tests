@@ -58,19 +58,19 @@ pipeline {
             }
         }
 
-        stage('SonarCloud Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
-                          -Dsonar.projectKey=jenkins-intergration_jenkins-intergration \
-                          -Dsonar.organization=jenkins-intergration \
-                          -Dsonar.host.url=https://sonarcloud.io \
-                          -Dsonar.login=$SONAR_TOKEN
-                    """
-                }
-            }
-        }
+        // stage('SonarCloud Analysis') {
+        //     steps {
+        //         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+        //             sh """
+        //                 mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar \
+        //                   -Dsonar.projectKey=jenkins-intergration_jenkins-intergration \
+        //                   -Dsonar.organization=jenkins-intergration \
+        //                   -Dsonar.host.url=https://sonarcloud.io \
+        //                   -Dsonar.login=$SONAR_TOKEN
+        //             """
+        //         }
+        //     }
+        // }
     
 
         stage('Build App') {
